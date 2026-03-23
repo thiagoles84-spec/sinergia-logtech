@@ -5010,63 +5010,97 @@ document.addEventListener('keydown', function(e){
   if (e.key === 'Escape') hideView();
 });
 </script>
-     <script>
-          // ═══ SINERGIA LOG TECH — CUSTOMIZAÇÕES PERMANENTES ═══
-          document.addEventListener('DOMContentLoaded', function() {
+        <script>
+                       // === SINERGIA LOG TECH — CUSTOMIZAÇÕES PERMANENTES ===
+                       document.addEventListener('DOMContentLoaded', function() {
 
-                 // 1. PAINEL LATERAL — Atualizar título, opções e formulário
-                 var ovPanel = document.querySelector('.ov-panel');
-                 if (ovPanel) {
-                          var t = ovPanel.querySelector('.ov-title');
-                          if (t) t.textContent = 'Fale com a Sinergia Log Tech';
-                          var s = ovPanel.querySelector('.ov-sub');
-                          if (s) s.textContent = 'Escolha como prefere iniciar. Nossa equipe entrará em contato em até 24h.';
-                          var ps = ovPanel.querySelectorAll('.ov-pillar');
-                          if (ps[0]) { ps[0].querySelector('.ov-pillar-title').textContent = '💬 Falar com o Especialista'; ps[0].querySelector('.ov-pillar-desc').textContent = 'Conversa direta com Thiago Lima para entender o contexto da sua operação e identificar os principais pontos de melhoria. Sem compromisso.'; }
-                          if (ps[1]) { ps[1].querySelector('.ov-pillar-title').textContent = '🔍 Solicitar Análise Operacional'; ps[1].querySelector('.ov-pillar-desc').textContent = 'Preencha as informações da sua operação e receba uma análise preliminar dos principais gargalos e oportunidades de melhoria.'; }
-                          if (ps[2]) { ps[2].querySelector('.ov-pillar-title').textContent = '📋 Solicitar Avaliação da Operação'; ps[2].querySelector('.ov-pillar-desc').textContent = 'Avaliação completa da operação com foco em processos, indicadores, custos logísticos e oportunidades estruturadas de melhoria.'; }
-                          var ft = ovPanel.querySelector('.ov-form-title');
-                          if (ft) ft.textContent = 'Iniciar diagnóstico operacional';
-                 }
+                                        // 1. PAINEL LATERAL — Atualizar título, opções e formulário
+                                        var ovPanel = document.querySelector('.ov-panel');
+                                        if (ovPanel) {
+                                                           var t = ovPanel.querySelector('.ov-title');
+                                                           if (t) t.textContent = 'Fale com a Sinergia Log Tech';
+                                                           var s = ovPanel.querySelector('.ov-sub');
+                                                           if (s) s.textContent = 'Escolha como prefere iniciar. Nossa equipe entrará em contato em até 24h.';
+                                                           var ps = ovPanel.querySelectorAll('.ov-pillar');
+                                                           if (ps[0]) { ps[0].querySelector('.ov-pillar-title').textContent = '💬 Falar com o Especialista'; }
+                                                           if (ps[1]) { ps[1].querySelector('.ov-pillar-title').textContent = '🔍 Solicitar Análise Operacional'; }
+                                                           if (ps[2]) { ps[2].querySelector('.ov-pillar-title').textContent = '📋 Solicitar Avaliação da Operação'; }
+                                                           var ft = ovPanel.querySelector('.ov-form-title');
+                                                           if (ft) ft.textContent = 'Iniciar diagnóstico operacional';
+                                        }
 
-                 // 2. SISTEMAS — Remover preços do template SPA
-                 if (typeof SPA_VIEWS !== 'undefined' && SPA_VIEWS['sistemas-index']) {
-                          SPA_VIEWS['sistemas-index'] = SPA_VIEWS['sistemas-index']
-                            .replace(/<span class="pg-badge"><span class="dot"><\/span>Implant\.[^<]*<\/span>/g, '')
-                            .replace(/<span class="pg-badge"><span class="dot"><\/span>Mensal[^<]*<\/span>/g, '');
-                 }
+                                        // 2. SISTEMAS — Remover preços do template SPA
+                                        if (typeof SPA_VIEWS !== 'undefined' && SPA_VIEWS['sistemas-index']) {
+                                                           SPA_VIEWS['sistemas-index'] = SPA_VIEWS['sistemas-index']
+                                                             .replace(/<span class="pg-badge"><span class="dot"><\/span>Implant\.[^<]*<\/span>/g, '')
+                                                             .replace(/<span class="pg-badge"><span class="dot"><\/span>Mensal[^<]*<\/span>/g, '');
+                                        }
 
-                 // 3. SHOWVIEW — Corrigir botões em todas as views
-                 if (typeof showView !== 'undefined') {
-                          var _orig = showView;
-                          window.showView = function(viewId, backLabel, parentView) {
-                                     _orig.call(this, viewId, backLabel, parentView);
-                                     setTimeout(function() {
-                                                  var sc = document.getElementById('spa-content');
-                                                  if (!sc) return;
-                                                  sc.querySelectorAll('.pg-badge').forEach(function(b) {
-                                                                 if (b.textContent.includes('R$') || b.textContent.includes('Implant.') || b.textContent.includes('Mensalidade')) b.style.display = 'none';
-                                                  });
-                                                  sc.querySelectorAll('nav button').forEach(function(btn) {
-                                                                 if (btn.textContent.trim() === 'Solicitar diagnóstico' && !btn.getAttribute('onclick')) btn.setAttribute('onclick', 'abrirOv()');
-                                                  });
-                                                  sc.querySelectorAll('a[href="#"]').forEach(function(link) {
-                                                                 var text = link.textContent.trim();
-                                                                 if (link.closest('nav')) return;
-                                                                 if (text.includes('Solicitar diagnóst') || text.includes('Falar com a Sinergia')) {
-                                                                                  link.removeAttribute('href'); link.style.cursor = 'pointer';
-                                                                                  link.onclick = function(e) { e.preventDefault(); abrirOv(); };
-                                                                 } else if (text === 'Voltar ao site' || text === '← Voltar ao site') {
-                                                                                  link.removeAttribute('href'); link.style.cursor = 'pointer';
-                                                                                  link.onclick = function(e) { e.preventDefault(); var ov = document.getElementById('spa-overlay'); if (ov) { ov.style.display = 'none'; window.scrollTo({top:0,behavior:'smooth'}); } };
-                                                                 }
-                                                  });
-                                     }, 60);
-                          };
-                 }
+                                        // 3. SHOWVIEW — Corrigir botões em todas as views + home ao voltar
+                                        if (typeof showView !== 'undefined') {
+                                                           var _orig = showView;
+                                                           window.showView = function(viewId, backlabel, parentView) {
+                                                                                _orig.call(this, viewId, backlabel, parentView);
+                                                                                setTimeout(function() {
+                                                                                                       var sc = document.getElementById('spa-content');
+                                                                                                       if (!sc) return;
 
-          });
-     </script>
-     </script>
+                                                                                                       // Remover badges de preço visíveis
+                                                                                                       sc.querySelectorAll('.pg-badge').forEach(function(b) {
+                                                                                                                                if (b.textContent.includes('R$') || b.textContent.includes('Implant') || b.textContent.includes('Mensal')) b.remove();
+                                                                                                            });
+
+                                                                                                       // Botão "Solicitar diagnóstico" na nav do SPA → abrir painel
+                                                                                                       sc.querySelectorAll('nav button').forEach(function(btn) {
+                                                                                                                                if (btn.textContent.trim() === 'Solicitar diagnóstico') {
+                                                                                                                                                           btn.setAttribute('onclick', 'abrirOv()');
+                                                                                                                                     }
+                                                                                                            });
+
+                                                                                                       // Links CTA dentro das views → abrir painel SEM sair da tela
+                                                                                                       sc.querySelectorAll('a').forEach(function(link) {
+                                                                                                                                var text = link.textContent.trim();
+                                                                                                                                if (link.closest('nav')) return;
+                                                                                                                                if (text.includes('Solicitar diagnóst') || text.includes('Falar com a Sinergia') || text.includes('Fale com a Sinergia')) {
+                                                                                                                                                           link.removeAttribute('href');
+                                                                                                                                                           link.style.cursor = 'pointer';
+                                                                                                                                                           link.onclick = function(e) { e.preventDefault(); e.stopPropagation(); abrirOv(); };
+                                                                                                                                     }
+                                                                                                            });
+
+                                                                                                       // Botão/link "Voltar ao site" → fechar SPA e ir para home
+                                                                                                       sc.querySelectorAll('a, button').forEach(function(el) {
+                                                                                                                                var text = el.textContent.trim();
+                                                                                                                                if (text === 'Voltar ao site' || text === '← Voltar ao site' || text === '← Voltar') {
+                                                                                                                                                           el.removeAttribute('href');
+                                                                                                                                                           el.style.cursor = 'pointer';
+                                                                                                                                                           el.onclick = function(e) {
+                                                                                                                                                                                        e.preventDefault();
+                                                                                                                                                                                        e.stopPropagation();
+                                                                                                                                                                                        var spaOv = document.getElementById('spa-overlay');
+                                                                                                                                                                                        if (spaOv) spaOv.style.display = 'none';
+                                                                                                                                                                                        window.scrollTo({top: 0, behavior: 'smooth'});
+                                                                                                                                                                };
+                                                                                                                                     }
+                                                                                                            });
+
+                                                                                                       // Botão spa-back-btn "← Sistemas" / "← Consultorias" etc → ir para tela índice da solução (não home)
+                                                                                                       var backBtn = sc.querySelector('#spa-back-btn');
+                                                                                                       if (backBtn && parentView) {
+                                                                                                                                backBtn.onclick = function(e) {
+                                                                                                                                                           e.preventDefault();
+                                                                                                                                                           e.stopPropagation();
+                                                                                                                                                           window.showView(parentView);
+                                                                                                                                     };
+                                                                                                            }
+
+                                                                                     }, 60);
+                                                           };
+                                        }
+
+                       });
+        </script>
+     
+</script>
 </body>
 </html>
